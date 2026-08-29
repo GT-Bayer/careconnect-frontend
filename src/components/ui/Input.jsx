@@ -18,7 +18,7 @@ export default function Input({
   // 2. Control visual de error
   const borderStyles = error
     ? "border-red-500 focus:ring-red-500 focus:border-red-500 text-red-900"
-    : "border-gray-300 focus:ring-teal-500 focus:border-teal-500 text-gray-900";
+    : "border-gray-300 focus:ring-blue-500 focus:border-blue-500 text-gray-900";
 
   return (
     <div className="w-full flex flex-col gap-1.5">
