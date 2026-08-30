@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Users, UserCheck, Clock, Ban, RefreshCw, Eye, CheckCircle } from "lucide-react";
+import { Users, UserCheck, Clock, Ban, RefreshCw, CheckCircle, ShieldCheck, HeartHandshake, Stethoscope } from "lucide-react";
 import { adminService } from "../../services/adminService";
 import UserModerationTable from "../../components/admin/UserModerationTable";
 import AdminSidebar from "../../components/admin/AdminSidebar";
@@ -63,6 +63,22 @@ export default function AdminDashboard() {
 
     const cuidadoresPendientes = usuarios.filter(u => (u.rol || u.role) === "CUIDADOR" && (u.estado || u.status) !== "ACTIVO");
 
+    // Métricas calculadas para la barra de distribución
+    const total = metricas?.totalUsuarios || 1;
+    const cuidadores = metricas?.totalCuidadores ?? 0;
+    const enfermeros = metricas?.totalEnfermeros ?? 0;
+    const familiares = metricas?.totalFamiliares ?? 0;
+
+    const pctCuidadores = Math.round((cuidadores / total) * 100);
+    const pctEnfermeros = Math.round((enfermeros / total) * 100);
+    const pctFamiliares = Math.round((familiares / total) * 100);
+
+    const rolesData = [
+        { label: "Cuidadores", count: cuidadores, pct: pctCuidadores, color: "bg-sky-500", icon: HeartHandshake },
+        { label: "Enfermeros", count: enfermeros, pct: pctEnfermeros, color: "bg-teal-500", icon: Stethoscope },
+        { label: "Familiares", count: familiares, pct: pctFamiliares, color: "bg-indigo-500", icon: Users },
+    ];
+
     return (
         <div className="flex h-screen overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
             <AdminSidebar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -103,6 +119,7 @@ export default function AdminDashboard() {
                     {/* VISTA 1: MÉTRICAS */}
                     {activeTab === "inicio_admin" && (
                         <div className="space-y-6">
+                            {/* KPI Cards */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                 {cards.map((c, i) => {
                                     const Icon = c.icon;
@@ -120,19 +137,88 @@ export default function AdminDashboard() {
                                 })}
                             </div>
 
-                            <div className="bg-white rounded-3xl p-6 border shadow-xs" style={{ borderColor: P?.baseNeutral || "#e2e8f0" }}>
-                                <h3 className="font-bold text-sm mb-4" style={{ color: P?.dark || "#0f172a" }}>Actividad global del sistema</h3>
-                                <div className="h-64 relative pt-4 flex items-center justify-center">
-                                    <svg className="w-full h-full" viewBox="0 0 600 200">
-                                        <defs>
-                                            <linearGradient id="gradAdmin" x1="0%" y1="0%" x2="0%" y2="100%">
-                                                <stop offset="0%" stopColor={P?.primary || "#0284c7"} stopOpacity="0.25" />
-                                                <stop offset="100%" stopColor={P?.primary || "#0284c7"} stopOpacity="0.0" />
-                                            </linearGradient>
-                                        </defs>
-                                        <path d="M50 150 Q 150 80, 250 120 T 450 40 T 550 60" fill="none" stroke={P?.primary || "#0284c7"} strokeWidth="3" />
-                                        <path d="M50 150 Q 150 80, 250 120 T 450 40 T 550 60 L 550 200 L 50 200 Z" fill="url(#gradAdmin)" />
-                                    </svg>
+                            {/* Detalle Analítico: Distribución por Rol y Últimos Registros */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                {/* Distribución por Rol */}
+                                <div className="bg-white rounded-3xl p-6 border shadow-xs flex flex-col justify-between" style={{ borderColor: P?.baseNeutral || "#e2e8f0" }}>
+                                    <div>
+                                        <h3 className="font-bold text-sm" style={{ color: P?.dark || "#0f172a" }}>Distribución por Rol</h3>
+                                        <p className="text-xs text-slate-500 mt-1">Composición actual de la red</p>
+
+                                        <div className="space-y-4 mt-6">
+                                            {rolesData.map((item, idx) => {
+                                                const RoleIcon = item.icon;
+                                                return (
+                                                    <div key={idx} className="space-y-1.5">
+                                                        <div className="flex justify-between text-xs font-semibold">
+                                                            <span className="flex items-center gap-2 text-slate-700">
+                                                                <RoleIcon className="w-4 h-4 text-slate-400" />
+                                                                {item.label}
+                                                            </span>
+                                                            <span className="text-slate-500">{item.count} ({item.pct}%)</span>
+                                                        </div>
+                                                        <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+                                                            <div
+                                                                className={`h-full ${item.color} rounded-full transition-all duration-500`}
+                                                                style={{ width: `${item.pct}%` }}
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-6 border-t mt-6 border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                                        <span>Total usuarios en red</span>
+                                        <span className="font-bold text-slate-700">{metricas?.totalUsuarios ?? 0}</span>
+                                    </div>
+                                </div>
+
+                                {/* Últimos Registros */}
+                                <div className="lg:col-span-2 bg-white rounded-3xl p-6 border shadow-xs" style={{ borderColor: P?.baseNeutral || "#e2e8f0" }}>
+                                    <div className="flex justify-between items-center mb-4">
+                                        <div>
+                                            <h3 className="font-bold text-sm" style={{ color: P?.dark || "#0f172a" }}>Últimos Registros</h3>
+                                            <p className="text-xs text-slate-500 mt-0.5">Nuevos ingresos a la plataforma</p>
+                                        </div>
+                                    </div>
+
+                                    {metricas?.ultimosRegistros && metricas.ultimosRegistros.length > 0 ? (
+                                        <div className="divide-y divide-slate-100">
+                                            {metricas.ultimosRegistros.map((u) => (
+                                                <div key={u.id} className="py-3 flex items-center justify-between first:pt-0 last:pb-0">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-xs text-slate-600">
+                                                            {u.nombre ? u.nombre.charAt(0).toUpperCase() : "U"}
+                                                        </div>
+                                                        <div>
+                                                            <p className="text-xs font-bold text-slate-800">{u.nombre} {u.apellido}</p>
+                                                            <p className="text-[11px] text-slate-400">{u.email}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                                                            {u.rol}
+                                                        </span>
+                                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                                            u.estado === "ACTIVO"
+                                                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                                                                : u.estado === "PENDIENTE_VERIFICACION"
+                                                                ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                                                : "bg-red-50 text-red-700 border border-red-200"
+                                                        }`}>
+                                                            {u.estado}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="h-40 flex items-center justify-center text-xs text-slate-400">
+                                            Sin registros recientes
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
