@@ -11,7 +11,8 @@ export const AuthProvider = ({ children }) => {
     // Al recargar la página, si hay token, intentamos recuperar el perfil
     useEffect(() => {
         const initAuth = async () => {
-            if (token) {
+            const savedToken = localStorage.getItem('token');
+            if (savedToken) {
                 try {
                     const userData = await authService.getProfile();
                     setUser(userData);
@@ -24,14 +25,23 @@ export const AuthProvider = ({ children }) => {
         };
 
         initAuth();
-    }, [token]);
+    }, []);
 
     const login = async (credentials) => {
         const data = await authService.login(credentials);
-        // Suponiendo que el back devuelve { token: "...", user: {...} }
+
+        // El backend devuelve el usuario en la raíz o anidado en .user
+        const userData = data.user || {
+            id: data.id,
+            nombre: data.nombre,
+            email: data.email,
+            rol: data.rol
+        };
+
         localStorage.setItem('token', data.token);
         setToken(data.token);
-        setUser(data.user);
+        setUser(userData);
+
         return data;
     };
 
@@ -42,13 +52,21 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, isAuthenticated: !!token, loading, login, logout }}>
+        <AuthContext.Provider
+            value={{
+                user,
+                token,
+                isAuthenticated: !!token && !!user,
+                loading,
+                login,
+                logout
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );
 };
 
-// Custom Hook para usarlo rápido en cualquier componente: const { user, login } = useAuth();
 export const useAuth = () => {
     const context = useContext(AuthContext);
     if (!context) {
