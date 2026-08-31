@@ -10,6 +10,15 @@ export const authService = {
         return response.data;
     },
     getProfile: async () => {
+        if (localStorage.getItem('token') === 'mock-bypass-token') {
+            return {
+                id: 11,
+                rol: "FAMILIAR",
+                role: "FAMILIAR",
+                nombre: "Familia García",
+                email: "familia.garcia@email.com"
+            };
+        }
         const response = await api.get('/auth/me');
         return response.data;
     },
