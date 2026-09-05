@@ -1,15 +1,18 @@
-import { useId } from "react";
+import { useId, forwardRef } from "react";
 
-export default function Input({
-  label,
-  error,
-  type = "text",
-  required = false,
-  disabled = false,
-  className = "",
-  id: customId,
-  ...props
-}) {
+const Input = forwardRef(function Input(
+  {
+    label,
+    error,
+    type = "text",
+    required = false,
+    disabled = false,
+    className = "",
+    id: customId,
+    ...props
+  },
+  ref
+) {
   // 1. Identificadores accesibles
   const autoId = useId();
   const inputId = customId || autoId;
@@ -37,8 +40,9 @@ export default function Input({
         </label>
       )}
 
-      {/* Input nativo */}
+      {/* Input nativo con ref inyectada */}
       <input
+        ref={ref}
         id={inputId}
         type={type}
         disabled={disabled}
@@ -57,4 +61,6 @@ export default function Input({
       )}
     </div>
   );
-}
+});
+
+export default Input;

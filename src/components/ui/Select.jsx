@@ -1,7 +1,7 @@
-import React, { useId } from "react";
+import React, { useId, forwardRef } from "react";
 
-export default function Select(props) {
-  const {
+const Select = forwardRef(function Select(
+  {
     label,
     options = [],
     error,
@@ -11,8 +11,9 @@ export default function Select(props) {
     id: customId,
     placeholder = "Selecciona una opción",
     ...restProps
-  } = props;
-
+  },
+  ref
+) {
   const autoId = useId();
   const selectId = customId || autoId;
   const errorId = `${selectId}-error`;
@@ -40,9 +41,11 @@ export default function Select(props) {
 
       <div className="relative w-full">
         <select
+          ref={ref}
           id={selectId}
           disabled={disabled}
           required={required}
+          defaultValue={restProps.value !== undefined ? undefined : ""}
           aria-invalid={Boolean(error)}
           aria-describedby={error ? errorId : undefined}
           className={`w-full px-3 py-2 pr-10 bg-white border rounded-lg shadow-sm text-sm appearance-none focus:outline-none focus:ring-2 focus:ring-offset-0 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed transition-colors duration-150 ${borderStyles} ${className}`}
@@ -92,4 +95,6 @@ export default function Select(props) {
       )}
     </div>
   );
-}
+});
+
+export default Select;
