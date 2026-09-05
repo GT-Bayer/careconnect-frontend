@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
   return (
     <footer className="w-full border-t border-gray-200 bg-white">
@@ -7,26 +9,26 @@ const Footer = () => {
         </p>
 
         <div className="flex gap-5 text-sm">
-          <a
-            href="/"
+          <Link
+            to="/"
             className="text-gray-600 transition-colors hover:text-teal-600"
           >
             Inicio
-          </a>
+          </Link>
 
-          <a
-            href="/login"
+          <Link
+            to="/login"
             className="text-gray-600 transition-colors hover:text-teal-600"
           >
             Iniciar sesión
-          </a>
+          </Link>
 
-          <a
-            href="/register"
+          <Link
+            to="/register"
             className="text-gray-600 transition-colors hover:text-teal-600"
           >
             Registrarse
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
