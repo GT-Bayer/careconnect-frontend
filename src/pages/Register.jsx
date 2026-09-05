@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authService } from "../services/authService";
+import RegisterProfessionalForm from "../components/auth/RegisterProfessionalForm";
 
 export default function Register() {
     const navigate = useNavigate();
-    
+
     const [formData, setFormData] = useState({
         nombre: "",
         apellido: "",
@@ -13,6 +14,17 @@ export default function Register() {
         telefono: "",
         dni: "",
         rol: "FAMILIAR",
+
+        // Cuidador
+        zonaPrincipal: "",
+        precioHora: "",
+
+        // Enfermero
+        matriculaProfesional: "",
+        tipoMatricula: "",
+        nivelProfesional: "",
+        institucionEgreso: "",
+        seguroMalaPraxis: "",
     });
 
     const handleChange = (e) => {
@@ -106,6 +118,14 @@ export default function Register() {
                     <option value="CUIDADOR">Cuidador</option>
                     <option value="ENFERMERO">Enfermero</option>
                 </select>
+
+                {(formData.rol === "CUIDADOR" ||
+                formData.rol === "ENFERMERO") && (
+                    <RegisterProfessionalForm
+                        formData={formData}
+                        handleChange={handleChange}
+                    />
+                )}
 
                 <button type="submit">
                     Registrar
