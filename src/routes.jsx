@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import AdminDashboard from './pages/dashboard/AdminDashboard';
+import Directory from './pages/Directory';
 
 export const AppRoutes = () => {
     return (
@@ -18,6 +19,7 @@ export const AppRoutes = () => {
             {/* Rutas para cualquier usuario autenticado */}
             <Route element={<ProtectedRoute />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/directory" element={<Directory />} />
             </Route>
 
             {/* Ruta exclusiva de Administrador */}
