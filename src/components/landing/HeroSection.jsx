@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import adultoMayor from "../../assets/adulto_mayor.png";
 import logo from "../../assets/logo_careconnect.png";
 
@@ -5,7 +6,6 @@ const HeroSection = () => {
   return (
     <section className="flex-1 bg-white">
       <div className="mx-auto flex max-w-7xl flex-col items-center gap-10 px-6 py-16 md:flex-row md:py-24">
-        
         <div className="flex-1 text-center md:text-left">
           <img
             src={logo}
@@ -22,22 +22,21 @@ const HeroSection = () => {
             el cuidado que cada persona necesita.
           </p>
 
-          <a
-            href="/register"
-            className="inline-block rounded-lg bg-teal-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-teal-700"
+          <Link
+            to="/register"
+            className="inline-block rounded-lg bg-teal-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-teal-700 shadow-sm"
           >
             Comenzar ahora
-          </a>
+          </Link>
         </div>
 
         <div className="flex-1">
           <img
             src={adultoMayor}
             alt="Persona mayor acompañada"
-            className="mx-auto w-full max-w-lg rounded-2xl object-cover"
+            className="mx-auto w-full max-w-lg rounded-2xl object-cover shadow-md"
           />
         </div>
-
       </div>
     </section>
   );
