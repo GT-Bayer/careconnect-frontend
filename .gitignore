@@ -32,6 +32,3 @@ lerna-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-# Archivos temporales locales de desarrollo
-src/pages/Landing.jsx
