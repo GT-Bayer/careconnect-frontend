@@ -9,7 +9,7 @@ import { SectionAdultosACargo } from "../../components/dashboard/SectionAdultosA
 import { SectionCaregivers } from "../../components/dashboard/SectionCaregivers";
 import { SectionDocuments } from "../../components/dashboard/SectionDocuments";
 import { SectionSettings } from "../../components/dashboard/SectionSettings";
-import { getAdultosMayores, updateAdultoMayorLocalDetails } from "../../services/adultoMayorService";
+import { getAdultosMayores, updateAdultoMayor } from "../../services/adultoMayorService";
 import { useAuth } from "../../context/AuthContext";
 
 // Mock collections local state for Familiar dashboard
@@ -43,7 +43,7 @@ export function FamiliarDashboard() {
     setSeniors(updatedList);
     updatedList.forEach(s => {
       const id = s.idAdultoMayor || s.id;
-      updateAdultoMayorLocalDetails(id, {
+      updateAdultoMayor(id, {
         condiciones: s.condiciones || [],
         medicamentos: s.medicamentos || [],
         necesidades: s.necesidades || []
